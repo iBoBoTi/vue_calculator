@@ -28,7 +28,7 @@ export default {
     data(){
         return{
             previous: null,
-            current: "1",
+            current: "",
             operator: null,
             operatorClicked: false,
             operatorClickCount: 0
@@ -37,6 +37,7 @@ export default {
     methods: {
         clear(){
             this.current = "";
+            this.previous = null;
         },
         sign(){
             this.current = this.current.charAt(0) === "-" ? this.current.slice(1) : `-${this.current}`
@@ -62,33 +63,64 @@ export default {
             this.operatorClicked = true;
         },
         add(){
-            this.operator = (a,b) => a + b;
-            this.setPrevious();
-            this.operatorClickCount++
+            if (this.operatorClickCount<1){
+                this.operator = (a,b) => a + b;
+                this.setPrevious();
+                this.operatorClickCount++;
+                
+            }else{
+                this.partialEqual()
+                this.setPrevious();
+            }   
         },
         subtract(){
-            this.operator = (a,b) => a - b;
-            this.setPrevious();
-            this.operatorClickCount++
+            if (this.operatorClickCount<1){
+                this.operator = (a,b) => b - a;
+                this.setPrevious();
+                this.operatorClickCount++;
+                
+            }else{
+                this.partialEqual()
+                this.setPrevious();
+            }  
         },
         multiply(){
-            this.operator = (a,b) => a * b;
-            this.setPrevious();
-            this.operatorClickCount++
+            if (this.operatorClickCount<1){
+                this.operator = (a,b) => a * b;
+                this.setPrevious();
+                this.operatorClickCount++;
+                
+            }else{
+                this.partialEqual()
+                this.setPrevious();
+            }  
         },
         divide(){
-            this.operator = (a,b) => a / b;
-            this.setPrevious();
-            this.operatorClickCount++
+            if (this.operatorClickCount<1){
+                this.operator = (a,b) => b / a;
+                this.setPrevious();
+                this.operatorClickCount++;
+                
+            }else{
+                this.partialEqual()
+                this.setPrevious();
+            } 
         },
         equal(){
             this.current = `${this.operator(
-                parseFloat(this.current), 
-                parseFloat(this.previous)
+                parseFloat(this.current === "" ? 0 : this.current), 
+                parseFloat(this.previous === null || this.previous === "" ? 0 : this.previous)
                 )}`;
             this.previous =null;
-            this.operatorClickCount = 0;
-        }
+            this.operatorClickCount = 0
+        },
+        partialEqual(){
+            this.current = `${this.operator(
+                parseFloat(this.current === "" ? 0 : this.current), 
+                parseFloat(this.previous === null || this.previous === "" ? 0 : this.previous)
+                )}`;
+            this.previous =null;
+        },
     }
     
 }
