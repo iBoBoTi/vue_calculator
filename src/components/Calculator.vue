@@ -27,7 +27,11 @@
 export default {
     data(){
         return{
+            previous: null,
             current: "1",
+            operator: null,
+            operatorClicked: false,
+            operatorClickCount: 0
         }
     },
     methods: {
@@ -42,6 +46,10 @@ export default {
             this.current = `${parseFloat(this.current)/100}`;
         },
         append(number){
+            if (this.operatorClicked){
+                this.current = "";
+                this.operatorClicked = false;
+            }
             this.current = `${this.current}${number}`
         },
         dot(){
@@ -49,11 +57,38 @@ export default {
                 this.append('.')
             }
         },
-        add(){},
-        subtract(){},
-        multiply(){},
-        divide(){},
-        equal(){}
+        setPrevious(){
+            this.previous = this.current
+            this.operatorClicked = true;
+        },
+        add(){
+            this.operator = (a,b) => a + b;
+            this.setPrevious();
+            this.operatorClickCount++
+        },
+        subtract(){
+            this.operator = (a,b) => a - b;
+            this.setPrevious();
+            this.operatorClickCount++
+        },
+        multiply(){
+            this.operator = (a,b) => a * b;
+            this.setPrevious();
+            this.operatorClickCount++
+        },
+        divide(){
+            this.operator = (a,b) => a / b;
+            this.setPrevious();
+            this.operatorClickCount++
+        },
+        equal(){
+            this.current = `${this.operator(
+                parseFloat(this.current), 
+                parseFloat(this.previous)
+                )}`;
+            this.previous =null;
+            this.operatorClickCount = 0;
+        }
     }
     
 }
